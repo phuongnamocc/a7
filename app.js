@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 require('./passport')((passport));
 // DB config
@@ -48,3 +50,48 @@ app.listen(PORT,console.log(`Server started on port ${PORT}`));
 mongoose.connect(db, {useNewUrlParser: true})
 .then(()=> console.log('MongoDB Connect...'))
 .catch(err => console.log(err));
+
+const swaggerOptions={
+  swaggerDefinition: {
+      info: {
+          title: 'My name',
+          description: "Nguyễn Công Phương Nam",
+          version: "1.0.0",
+          contact: {
+              name: "Nguyễn Công Phương Nam",
+              email: "17520778@gm.edu.vn",
+          },
+          servers: ["localhost:9001"]
+      }
+  },
+  apis: ["app.js"]
+};
+const swaggerDocs=swaggerJsDoc(swaggerOptions);
+app.use('/apidocs',swaggerUi.serve,swaggerUi.setup(swaggerDocs));
+
+/**
+ * @swagger
+ * /:
+ *  get:
+ *    description: Use to request all student
+ *    responses:
+ *      '200':
+ *        description: A successful request
+ * /users/login:
+ *   post:
+ *    description: Login
+ *    parameters:
+ *    - name: email
+ *      description: User Email
+ *      in: formData
+ *      required: true
+ *      type: string
+ *    - name: password
+ *      description: User Password
+ *      in: formData
+ *      required: true
+ *      type: string
+ *    responses:
+ *      '200':
+ *        description: login success
+ */
